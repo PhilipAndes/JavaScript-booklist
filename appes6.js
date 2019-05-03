@@ -58,6 +58,27 @@ class UI {
     }
 }
 
+// Local Storage Class
+class Store {
+    // We want them all static, so we put the static keyword in front of them all:
+    // getBooks is gonna fetch the books from local storage
+    static getBooks() {
+
+    }
+    // We gonna have a method displayBooks, which displays the books in the UI:
+    static displayBooks() {
+
+    }
+    // Add to local storage
+    static addBook() {
+
+    }
+    // Remove book
+    static removeBook() {
+
+    }
+}
+
 // Event Listener for add book
 document.getElementById('book-form').addEventListener('submit', function(e){
     //Get form values
