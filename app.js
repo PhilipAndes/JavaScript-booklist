@@ -25,6 +25,27 @@ UI.prototype.addBookToList = function(book){
     list.appendChild(row);
 }
 
+// Show Alert
+UI.prototype.showAlert = function(message, className) {
+    //Now we have to construct the elements, so lets create a div
+    const div = document.createElement('div');
+    // Add classes
+    div.className = `alert ${className}`;
+    // Add textnode
+    div.appendChild(document.createTextNode(message));
+    //Then we need to insert it to the dom, but first we need to get the parent
+    const container = document.querySelector('.container');
+    //Then we want to get the form, because we want to put it before the form
+    const form = document.querySelector('#book-form');
+    //Then we want to take the container which is the parent, and insert the div before the form
+    container.insertBefore(div, form);
+
+    //We want the alert to disappear after 3 seconds
+    setTimeout(function(){
+        document.querySelector('.alert').remove();
+    }, 3000);
+}
+
 // Clear Fields
 UI.prototype.clearFields = function(){
     //so get the element by id and set the value to nothing
@@ -49,12 +70,20 @@ document.getElementById('book-form').addEventListener('submit', function(e){
     //Then when we want the book to be added to the table below, and the UI object is gonna take care of that, so right now we want to instantiate the UI object
     const ui = new UI();
 
-    // Add book to list
-    ui.addBookToList(book);
+    // Validating 
+    if(title === '' || author === '' || isbn === '') {
+        // Error alert in the UI, the message and the class of error
+        ui.showAlert('Please fill in all fields', 'error');
+    } else {
+        // Add book to list
+        ui.addBookToList(book);
 
-    // Clear fields 
-    ui.clearFields();
+        // Show message when book added to list
+        ui.showAlert('Book Added!', 'succes');
 
+        // Clear fields 
+        ui.clearFields();
+    }
 
     e.preventDefault();
 });
