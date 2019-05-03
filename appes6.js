@@ -63,21 +63,61 @@ class Store {
     // We want them all static, so we put the static keyword in front of them all:
     // getBooks is gonna fetch the books from local storage
     static getBooks() {
+        // Initialize a local var called books
+        let books;
+        //check local storage
+        if(localStorage.getItem('books') === null) {
+            //if it's not there, let books equal an empty array
+            books = [];
+        } else {
+            // We need this to be a JavaScript object so we need to run this true JSON.parse function
+            books = JSON.parse(localStorage.getItem('books'));
+        }
 
+        return books;
     }
     // We gonna have a method displayBooks, which displays the books in the UI:
     static displayBooks() {
+        //get the books
+        const books = Store.getBooks();
+        //Then we are going to loop true the books with forEach
+        books.forEach(function(book){
+            const ui = new UI;
 
+            // Add book to UI
+            ui.addBookToList(book);
+        });
     }
     // Add to local storage
-    static addBook() {
-
+    static addBook(book) {
+        //get the books
+        const books = Store.getBooks();
+        //We want to push on to it
+        books.push(book);
+        //Then save it to local storage
+        localStorage.setItem('books', JSON.stringify(books));
     }
     // Remove book
-    static removeBook() {
+    static removeBook(isbn) {
+        //get the books
+        const books = Store.getBooks();
 
+        //Then we are going to loop true the books with forEach
+        books.forEach(function(book, index){
+            if(book.isbn === isbn) {
+                //then we want to splice out the index, and remove 1 
+                books.splice(index, 1);
+            }
+        });
+
+        //Then save it to local storage
+        localStorage.setItem('books', JSON.stringify(books));
     }
 }
+
+// DOM Load Event
+//When the dom content is loaded then we want to call the function store.displaybooks
+document.addEventListener('DOMContentLoaded', Store.displayBooks);
 
 // Event Listener for add book
 document.getElementById('book-form').addEventListener('submit', function(e){
@@ -102,6 +142,9 @@ document.getElementById('book-form').addEventListener('submit', function(e){
         // Add book to list
         ui.addBookToList(book);
 
+        // Add to local storage
+        Store.addBook(book);
+
         // Show message when book added to list
         ui.showAlert('Book Added!', 'succes');
 
@@ -119,6 +162,9 @@ document.getElementById('book-list').addEventListener('click', function(e){
 
     // Delete book
     ui.deleteBook(e.target);
+
+    // Remove from local storage
+    Store.removeBook(e.target.parentElement.previousElementSibling.textContent);
 
     // Show alert when delete, class will be succes
     ui.showAlert('Book Removed!', 'succes');
